@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Button, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import DatePicker from "react-datepicker";
 import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +16,10 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
       setTask(prev => ({ ...prev, [name]: value }))
     }
   }
-
+  const handlePriority = (e) => {
+    const { checked } = e.target;
+    setTask(prev => ({ ...prev, priority: checked }))
+  }
 
   const onImageChange = event => {
     if (event.target.files && event.target.files[0]) {
@@ -56,69 +58,87 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
   }, [taskData])
 
   return (
-    <Modal isOpen={modal} toggle={toggle} key={task.name}>
-      <ModalHeader toggle={toggle}>{type} Task</ModalHeader>
-      <ModalBody>
-        <FormGroup>
-          <Label for="title">
-            Title
-          </Label>
-          <Input type="text" name="title" value={task.title} onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <Label for="deadline">Deadline</Label>
-          <DatePicker
-            selected={task.deadline}
-            onChange={(date) => setTask(prev => ({ ...prev, deadline: date }))}
-            showTimeSelect
-            dateFormat="Pp"
-            placeholderText='Deadline...'
-            todayButton="Today"
-            value={task.deadline}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="description">
-            Description
-          </Label>
-          <Input type="textarea" name="description" value={task.description} onChange={handleChange} />
-        </FormGroup>
-        <FormGroup check>
-          <Input type="checkbox" />
-          <Label check>
-            Priority
-          </Label>
-        </FormGroup>
+    <div>
+      <div className={`modal ${modal ? 'open' : ''}`} id="modal">
+        <div className="modal-content">
+          <button onClick={toggle} className="modal-close" title="Close Modal">X</button>
+          <h3>{type} Task</h3>
+          <div className="modal-area">
+            <div className='modal-body'>
+              <div className='modal-form'>
+                <div className="form-group" >
+                  <label htmlFor="title">
+                    Task
+                  </label>
+                  <input type="text" name="title" value={task.title} onChange={handleChange} />
+                </div>
+                <div className="form-group" >
+                  <label htmlFor="deadline">Deadline</label>
+                  <DatePicker
+                    selected={task.deadline ? new Date(task.deadline) : null}
+                    onChange={(date) => setTask(prev => ({ ...prev, deadline: date }))}
+                    showTimeSelect
+                    dateFormat="Pp"
+                    todayButton="Today"
+                    value={task.deadline ? new Date(task.deadline) : null}
+                  />
+                </div>
+                <div className="form-group" >
+                  <label htmlFor="description">
+                    Description
+                  </label>
+                  <input type="textarea" name="description" value={task.description} onChange={handleChange} />
+                </div>
+                <div className="form-group priority-input-container" check>
+                  <input type="checkbox" id="priority" name="priority" onChange={handlePriority} checked={task.priority} />
+                  <label htmlFor='priority'>
+                    Priority
+                  </label>
+                </div>
 
-        <div>
-          <label htmlFor="tags">
-            Tags
-          </label>
-          <div>
-            <Select options={tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))} isMulti onChange={(selectedOption) => setTask(prev => ({ ...prev, tags: selectedOption.map(({ id, name }) => ({ id, name })) }))} />
+                <div className='form-group'>
+                  <label htmlFor="tags">
+                    Tags
+                  </label>
+                  <div>
+                    <Select
+                      options={tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))}
+                      isMulti
+                      onChange={(selectedOption) => setTask(prev => ({ ...prev, tags: selectedOption.map(({ id, name }) => ({ id, name })) }))}
+                      value={task.tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))}
+                    />
+                  </div>
+
+
+                </div>
+                <div className="form-group" >
+                  <label htmlFor="image">
+                    Image
+                  </label>
+                  <input
+                    id="image"
+                    name="image"
+                    type="file"
+                    onChange={onImageChange}
+                    value={task.image}
+                  />
+                </div>
+
+              </div>
+              <footer>
+                <button className="primary" onClick={handleSave}>{type === "Create" ? "Create" : "Update"}</button>
+                <button className="secondary" onClick={toggle}>Cancel</button>
+              </footer>
+            </div>
           </div>
-
-
         </div>
-        <FormGroup>
-          <Label for="image">
-            Image
-          </Label>
-          <Input
-            id="image"
-            name="image"
-            type="file"
-            onChange={onImageChange}
-            value={task.image}
-          />
-        </FormGroup>
+      </div>
+      {/* {  <ModalContainer isOpen={modal} toggle={toggle} key={task.name}>
+      <ModalHeader toggle={toggle}></ModalHeader>
+      <ModalBody>
 
-      </ModalBody>
-      <ModalFooter>
-        <Button color="primary" onClick={handleSave}>{type === "Create" ? "Create" : "Update"}</Button>
-        <Button color="secondary" onClick={toggle}>Cancel</Button>
-      </ModalFooter>
-    </Modal>
+    </ModalContainer>} */}
+    </div>
   );
 };
 

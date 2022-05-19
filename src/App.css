@@ -1,55 +1,306 @@
-p {
-  margin:0;
+*,*::after, *::before {
+  box-sizing: border-box;
+}
+h1,h2,h3,h4,h5,h6, p {
+  padding: 0;
+  margin: 0;
 }
 
-.header{
-  height: 200px;
+/* Styles for todo page */
+.main-container {
   width: 100%;
-  background-color : #E9EEF6;
-  padding-top: 50px;
+  padding: 1rem;  
+  margin: 1rem auto 3rem;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa !important;
 }
 
-.card-container{
-  height: 300px;
-  width: 300px;
-  box-shadow: 0px 3px 50px #A5A5A5;
+.app-title {
+  color: #007bff;
+  padding: 1.5rem;
+  text-align:center;
+  font-size: 2.5rem;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.todo-list-header {
+  margin-bottom: 1.5rem;
+}
+.task-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto 2rem;
+  max-width: 1280px;
+  padding: 0px 1rem;
+}
+.task-input-container input {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  font-size: 1.5rem;
+  margin-right: .5rem;
+}
+.task-input-container button {
+  white-space: nowrap;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: .875rem 1rem;
+  border-radius: .25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+}
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%; 
+  padding: 0.5rem 1rem;
+  justify-content: space-between;
 }
 
-.card-wrapper{
-  width: 270px; 
-  height: 200px; 
-  box-shadow: 0px 3px 50px #A5A5A5;
+.task-item button {
+  display: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.task-item:hover {
+  background-color: #E9EEF6;
+}
+.task-item:hover button{
+  display: block;
+
+}
+.task-item-buttons-container {
+  display: flex;
+  gap: 0.5rem
+}
+.edit-button {
+  line-height: 1;
+  background: none;
+  border: none;
+}
+
+.delete-button {
+  color: red;
+  line-height: 1;
+  background: none;
+  border: none;
+}
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.status-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  line-height: 40px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+.status-icon-container h4 {
+  flex-grow: 1;
+  font-size: 1.75rem;
+  padding: 0.5rem;
+}
+
+.completed-icon {
+  color: #28a745;
+}
+.filters-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 1rem;
+}
+
+.filters-container h3 {
+  font-size: 1.5rem;
+}
+
+.status-filter {
+  display: flex;
+  gap:0.5rem;
+  align-items: baseline;
+}
+
+button.modal-open {
+  display:block;
+  padding:20px;
+  color:#424242;
+  font-weight:bold;
+  margin:50px auto;
+  width:200px;
+  background:#e0e0e0;
+  border-radius:2px;
+  text-align:center;
+  text-decoration:none;
+}
+.modal {
+  background:rgba(0,0,0,0.7);
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0px;
+  left:0px;
+  bottom:0px;
+  transition:all .5s ease-in-out;
+  opacity:0;
+  z-index:-1;
+}
+.modal.open {
+  opacity:1;
+  transition:all .5s ease-in-out;
+  z-index:+1;
+}
+.modal-content {
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:500px;
+  background:#fff;
+  border-radius:4px;
+  transform:translate(-50%, -200%);
+  transition:all .5s ease-in-out;
+  perspective: 1000;
+  outline:1px solid transparent;
+  opacity:0;
+}
+
+.modal.open .modal-content {
+  transform:translate(-50%, -50%);
+  transition:all .5s ease-in-out;
+  transition-delay:.5s;
+  z-index:9999;
+  opacity:1;
+}
+.modal-close {
+  float:right;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration:none;
+  padding:22px 22px;
+  color:#424242;
+  font-weight:800;
+  transition:all .5s ease-in-out;
+  z-index:+1;
+  background:rgba(0,0,0,0.1);
+  text-align:center;
+  border-radius:0 4px 0 0;
+}
+.modal-close:hover {
+  color:#fff;
+  background:rgba(0,0,0,0.5);
+}
+.modal-content h3 {
+  padding:20px;
+  display:block;
+  text-align:center;
+  border-bottom:1px solid #e0e0e0;
+  text-transform:uppercase;
+  background: #007bff;
+  color:#fff;
+  border-radius:4px 4px 0 0;
+}
+.modal-area {
+  padding:20px;
+}
+.modal .form-group {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
-
-.card-top{
+.modal .form-group label {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.modal .form-group.priority-input-container input {
+  width: auto;
+}
+.modal .form-group.priority-input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.modal input {
   width: 100%;
-  height: 2%;
+  padding: 1em;
+  line-height: 1.4;
+  background-color: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+  -webkit-transition: 0.35s ease-in-out;
+  -moz-transition: 0.35s ease-in-out;
+  -o-transition: 0.35s ease-in-out;
+  transition: 0.35s ease-in-out;
+  transition: all 0.35s ease-in-out;
 }
-
-.task-holder{
-  width: 100%;
-  height: 98%;
-  padding: 10px 10px;
-  display : flex;
-  flex-direction: column;
-  position: relative;
+input:focus {
+  outline: 0;
+  border-color: #007bff;
 }
-
-.card-header{
-  margin-top: 10px;
-  margin-bottom: 10px;
-  max-width: 80px;
-  height: 30px;
-  padding: 1px 1px !important;
+.modal footer {
+  display: flex;
+  justify-content: flex-end;
+  gap:0.5rem;
+}
+.modal button {
+  display: inline-block;
+  font-weight: 400;
   text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.modal button.primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
-.task-container{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: #F6F7F8;
-  padding : 40px 100px;
+/* Media Queries */
+
+@media (min-width: 576px) {
+  .main-container {
+    max-width: 540px;
+  }
 }
+
+@media (min-width: 768px) {
+  .main-container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .main-container {
+    max-width: 1140px;
+  }
+}
+

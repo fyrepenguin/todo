@@ -1,6 +1,5 @@
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect } from "react";
 import TodoList from "./components/TodoList";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 
 function App() {
@@ -9,7 +8,7 @@ function App() {
     title: "",
     id: null,
     description: "",
-    deadline: "",
+    deadline: null,
     tags: [],
     priority: false,
     image: "",
@@ -28,7 +27,7 @@ function App() {
     console.log({ index })
     tempList[index] = task;
     console.log({ tempList, l: task.title.length })
-    setTasks(tempList);
+    setTasks([...tempList]);
     console.log("updated?")
   };
   const onDelete = (id) => {
@@ -55,8 +54,10 @@ function App() {
 
 
   return (
-    <div className="App"> 
-      <h2>Navbar with logout option</h2>
+    <div className="main-container">
+      <header className="app-title">
+        <h2>Todo </h2>
+      </header>
       <TodoList tasks={tasks} onCreate={onCreate} onUpdate={onUpdate} onDelete={onDelete} defaultTask={defaultTask} />
     </div>
   );

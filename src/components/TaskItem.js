@@ -1,44 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TaskForm from './TaskForm'
-import { Button } from 'reactstrap';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa'
-import { useEffect } from 'react';
+import { FiCircle, FiCheckCircle } from 'react-icons/fi'
+
+
 const TaskItem = ({ task, onDelete, onUpdate }) => {
   const [modal, setModal] = useState(false);
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState(null);
 
   const toggle = () => {
     setModal(!modal);
   }
 
   const handleStatus = (e) => {
-    setStatus(e.target.checked)
-
+    setStatus(prev => !prev);
   }
 
   const handleDelete = () => {
-    console.log(task.id)
     onDelete(task.id)
   }
   useEffect(() => {
     setStatus(task.completed)
   }, [task])
+
   useEffect(() => {
-    status && onUpdate({ ...task, completed: status }, task.id)
+    console.log({ task, status })
+    status !== null && onUpdate({ ...task, completed: status }, task.id)
   }, [status])
 
   return (
     <>
-      <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
-        <input type="checkbox" checked={status} onChange={handleStatus} />
-        <p style={{ textDecoration: status ? 'line-through' : 'none' }}>{task.title} </p>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Button onClick={() => setModal(true)}>
+      <div className="task-item">
+        {/* <input type="checkbox" checked={status} onChange={handleStatus} name="status" /> */}
+        <div onClick={handleStatus} className="task-header">
+          <div className="status-icon-container">
+            {status ? <FiCheckCircle className='completed-icon' /> : <FiCircle />}
+          </div>
+          <h4 style={{ textDecoration: status ? 'line-through' : 'none' }}>{task.title} </h4>
+        </div>
+
+
+        <div className='task-item-buttons-container'>
+          <button className='edit-button' onClick={() => setModal(true)} style={{ lineHeight: '1', background: 'none', border: 'none' }}>
             <FaEdit />
-          </Button>
-          <Button onClick={handleDelete} >
+          </button>
+          <button onClick={handleDelete} className="delete-button" >
             <FaTrashAlt />
-          </Button>
+          </button>
         </div>
       </div>
       <TaskForm key={task.id} modal={modal}
