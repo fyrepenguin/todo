@@ -24,8 +24,8 @@ const TaskItem = ({ task, onDelete, onUpdate }) => {
   }, [task])
 
   useEffect(() => {
-    console.log({ task, status })
     status !== null && onUpdate({ ...task, completed: status }, task.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   return (

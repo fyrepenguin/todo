@@ -27,23 +27,6 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
       setTask(prev => ({ ...prev, image: URL.createObjectURL(img) }));;
     }
   };
-  // const onTagsChange = (e) => {
-  //   const { value } = e.target;
-  //   console.log({ value, tags: task.tags })
-
-  //   if (task.tags.includes(value)) {
-  //     console.log("includes", value)
-  //     setTask(prev => ({ ...prev, tags: prev.tags.filter(tag => tag !== value) }));
-  //   } else {
-  //     console.log("not", value)
-  //     setTask(prev => ({ ...prev, tags: [...prev.tags, value] }));
-  //   }
-  // }
-  // const onDeadlineChange = (e,) => {
-  //   const { value } = e.target;
-  //   console.log({ value })
-  //   setTask(prev => ({ ...prev, deadline: { value } }));
-  // }
 
   const handleSave = (e) => {
     e.preventDefault()
@@ -89,7 +72,7 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
                   </label>
                   <input type="textarea" name="description" value={task.description} onChange={handleChange} />
                 </div>
-                <div className="form-group priority-input-container" check>
+                <div className="form-group priority-input-container">
                   <input type="checkbox" id="priority" name="priority" onChange={handlePriority} checked={task.priority} />
                   <label htmlFor='priority'>
                     Priority
