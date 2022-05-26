@@ -18,8 +18,8 @@ function App() {
 
   const onCreate = newTask => {
     newTask.title.length > 0 && setTasks([newTask, ...tasks]);
-
   };
+
   const onUpdate = (task, id) => {
     let tempList = tasks;
     let index = tasks.findIndex(t => t.id === id);

@@ -117,11 +117,6 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
           </div>
         </div>
       </div>
-      {/* {  <ModalContainer isOpen={modal} toggle={toggle} key={task.name}>
-      <ModalHeader toggle={toggle}></ModalHeader>
-      <ModalBody>
-
-    </ModalContainer>} */}
     </div>
   );
 };

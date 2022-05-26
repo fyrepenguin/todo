@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import TaskForm from './TaskForm'
 import TaskItem from './TaskItem';
+import tags from '../tags.json';
 import Select from 'react-select';
 
 const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
@@ -9,6 +10,7 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [sortOrder, setSortOrder] = useState("desc");
   const [filteredTasks, setFilteredTasks] = useState(tasks);
   const [sortedTasks, setSortedTasks] = useState(tasks);
   const [categorisedTasks, setCategorisedTasks] = useState({
@@ -50,13 +52,12 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   }
 
   const sortTasksByCreatedAt = (tasks) => {
+    // sort based on sort order
     return tasks.sort((a, b) => {
-      if (a.createdAt > b.createdAt) {
-        return -1
-      } else if (a.createdAt < b.createdAt) {
-        return 1
+      if (sortOrder === "asc") {
+        return a.createdAt - b.createdAt
       } else {
-        return 0
+        return b.createdAt - a.createdAt
       }
     })
   }
@@ -85,10 +86,10 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   },]
 
   useEffect(() => {
-    const selectedOptions = selected.map(({ value }) => value);
-    if (selectedOptions.length > 0) {
+
+    if (selected) {
       const filtered = tasks.filter(task => {
-        if (selectedOptions.includes('completed')) {
+        if (selected.value === 'completed') {
           return task.completed
         }
         return true
@@ -100,45 +101,71 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   }, [tasks, selected])
 
   useEffect(() => {
+
+    const selectTags = selectedTags.map(({ value }) => value);
+    let filtered = [...tasks]
+    if (selectTags.length > 0) {
+      filtered = tasks.filter(({ tags }) =>
+        tags.length > 0).filter(({ tags }) => {
+          return tags.some(tag => selectTags.includes(tag.name));
+        });
+      console.log({ filtered, selectTags })
+
+      setFilteredTasks(filtered)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortedTasks, selectedTags])
+
+  useEffect(() => {
+
     setSortedTasks(sortTasks(filteredTasks))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredTasks])
 
+
+
   useEffect(() => {
-    const overDue = tasks.filter(task => {
-      if (task.deadline && task.deadline < new Date().getTime()) {
+    const overDue = sortedTasks.filter(task => {
+      if (task.deadline && task.deadline < new Date().getTime() && !task.completed) {
         return true
       }
       return false
     })
 
-    const completed = tasks.filter(task => task.completed);
-    const priority = tasks.filter(task => task.priority);
-    const today = tasks.filter(task => {
+    const completed = sortedTasks.filter(task => task.completed);
+    const priority = sortedTasks.filter(task => task.priority);
+
+    const today = sortedTasks.filter(task => {
       if (task.deadline && task.deadline > new Date().getTime() && task.deadline < new Date().setDate(new Date().getDate() + 1)) {
         return true
       }
       return false
     })
-    const thisWeek = tasks.filter(task => {
+    const thisWeek = sortedTasks.filter(task => {
       if (task.deadline && task.deadline > new Date().getTime() && task.deadline < new Date().setDate(new Date().getDate() + 7)) {
         return true
       }
       return false
-    })
+    });
+
 
     //filter tasks based on selected tags
-    setCategorisedTasks({
+    setCategorisedTasks(prev => ({
       all: tasks,
       today,
       thisWeek,
       overDue,
       completed,
-      priority
-    });
+      priority,
+      tags: prev.tags
+    }));
 
-  }, [tasks])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortedTasks])
 
+  useEffect(() => {
+    console.log({ categorisedTasks, filteredTasks, sortedTasks })
+  }, [categorisedTasks])
 
   return (
     <>
@@ -153,21 +180,65 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
         <div className="filters-container">
           <div><h3>Tasks</h3></div>
           <div className='status-filter'>
-            <label htmlFor="filter">Filter:</label>
+            <h4>Filters: </h4>
+            <div>
+              <label htmlFor="filter"> By Status:</label>
             <Select
               options={options}
-              isMulti
-              onChange={(selectedOption) => setSelected([...selectedOption])}
+                isClearable={true}
+                onInputChange={(selectedOption) => setSelected(selectedOption)}
               value={selected}>
 
             </Select>
+            </div>
+            <div>
+              <label htmlFor="filter"> By Tags:</label>
+              <Select
+                options={tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))}
+                isMulti
+                onInputChange={(selectedOption) => {
+                  setSelectedTags([...selectedOption])
+                }}
+                value={selectedTags}
+              />
+            </div>
+            <div>
+              <label htmlFor="filter">Sort By:</label>
+              <Select
+                options={[{ value: 'asc', label: 'Asc' }, { value: 'desc', label: 'Desc' }]}
+                onChange={(selectedOption) => {
+                  setSortOrder(selectedOption)
+                }}
+                value={sortOrder}
+              />
+            </div>
           </div>
 
         </div>
       </div>
       <div className="tasks-container">
+        <h1>Sorted</h1>
+        {sortedTasks.length > 0 ?
+          sortedTasks.filter(task => !task.completed).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />) : <p style={{ textAlign: 'center' }}>No tasks to show</p>}
+        <h1>Categorized</h1>
+        {/* Today Tasks */}
+        {categorisedTasks.today.length > 0 && <div className="tasks-container-header">
+          <h3>Today</h3>
+          {categorisedTasks.today.filter(task => !task.completed).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
+        {/* This Week Tasks */}
+        {categorisedTasks.thisWeek.filter(task => !categorisedTasks.today.includes(task)).length > 0 && <div className="tasks-container-header">
+          <h3>This Week</h3>
+          {/* filter today tasks */}
+          {categorisedTasks.thisWeek.filter(task => !categorisedTasks.today.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
 
-        {sortedTasks.length > 0 ? sortedTasks.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />) : <p style={{ textAlign: 'center' }}>No tasks to show</p>}
+        {/* Overdue Tasks */}
+        {categorisedTasks.overDue.length > 0 && <div className="tasks-container-header">
+          <h3>Overdue</h3>
+          {categorisedTasks.overDue.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
+        {/* Completed Tasks */}
+        {categorisedTasks.completed.length > 0 && <div className="tasks-container-header">
+          <h3>Completed</h3>
+          {categorisedTasks.completed.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
       </div>
       <TaskForm key={0} toggle={toggle} modal={modal} onCreate={onCreate}
         defaultTask={defaultTask} type="Create" />

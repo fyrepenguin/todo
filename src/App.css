@@ -64,9 +64,14 @@ h1,h2,h3,h4,h5,h6, p {
   padding: 0.5rem 1rem;
   justify-content: space-between;
 }
-
+.task-header {
+  
+}
+.task-header h4 {
+  padding-right: 1.25rem;
+}
 .task-item button {
-  display: none;
+  visibility: hidden;
   cursor: pointer;
   font-size: 1.25rem;
 }
@@ -75,6 +80,13 @@ h1,h2,h3,h4,h5,h6, p {
 }
 .task-item:hover button{
   display: block;
+  visibility: visible;
+}
+.task-item-priority {
+  position: absolute;
+  right:8px;
+  top:8px;
+  color:rgb(255, 123, 0)
 }
 .task-item-buttons-container {
   display: flex;
@@ -96,8 +108,9 @@ h1,h2,h3,h4,h5,h6, p {
 .task-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
+   cursor: pointer;
+  position: relative;
+  flex:1 1 auto;
 }
 
 .status-icon-container {
@@ -285,6 +298,31 @@ input:focus {
   border-color: #007bff;
 }
 
+.task-item-title {
+  font-size: 1.5rem;
+}
+.task-item-description {
+  font-size: 1rem;
+
+}
+.task-item-deadline {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap:0.5rem;
+  line-height: 1.15;
+}
+.tag-item {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: #9f9af8;
+  color: #fff;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
 /* Media Queries */
 
 @media (min-width: 576px) {
