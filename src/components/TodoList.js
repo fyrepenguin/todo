@@ -217,16 +217,12 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
         </div>
       </div>
       <div className="tasks-container">
-        <h1>Sorted</h1>
-        {sortedTasks.length > 0 ?
-          sortedTasks.filter(task => !task.completed).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />) : <p style={{ textAlign: 'center' }}>No tasks to show</p>}
-        <h1>Categorized</h1>
         {/* Today Tasks */}
         {categorisedTasks.today.length > 0 && <div className="tasks-container-header">
           <h3>Today</h3>
           {categorisedTasks.today.filter(task => !task.completed).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
         {/* This Week Tasks */}
-        {categorisedTasks.thisWeek.filter(task => !categorisedTasks.today.includes(task)).length > 0 && <div className="tasks-container-header">
+        {categorisedTasks.thisWeek.filter(task => !task.completed).filter(task => !categorisedTasks.today.includes(task)).length > 0 && <div className="tasks-container-header">
           <h3>This Week</h3>
           {/* filter today tasks */}
           {categorisedTasks.thisWeek.filter(task => !categorisedTasks.today.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
@@ -235,6 +231,9 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
         {categorisedTasks.overDue.length > 0 && <div className="tasks-container-header">
           <h3>Overdue</h3>
           {categorisedTasks.overDue.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
+        {sortedTasks.length > 0 &&
+          <div className='tasks-container-header'>
+            {sortedTasks.filter(task => !task.completed).filter(task => !categorisedTasks.today.includes(task)).filter(task => !categorisedTasks.thisWeek.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)} </div>}
         {/* Completed Tasks */}
         {categorisedTasks.completed.length > 0 && <div className="tasks-container-header">
           <h3>Completed</h3>
