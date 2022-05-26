@@ -12,11 +12,12 @@ function App() {
     tags: [],
     priority: false,
     image: "",
-    completed: false
+    completed: false,
+    createdAt: null
   };
 
   const onCreate = newTask => {
-    newTask.title.length > 0 && setTasks([...tasks, newTask]);
+    newTask.title.length > 0 && setTasks([newTask, ...tasks]);
 
   };
   const onUpdate = (task, id) => {

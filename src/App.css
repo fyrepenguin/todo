@@ -21,7 +21,6 @@ h1,h2,h3,h4,h5,h6, p {
   padding: 1.5rem;
   text-align:center;
   font-size: 2.5rem;
-  text-decoration: underline;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +33,7 @@ h1,h2,h3,h4,h5,h6, p {
   align-items: center;
   justify-content: center;
   margin: 1rem auto 2rem;
-  max-width: 1280px;
+  max-width: 700px;
   padding: 0px 1rem;
 }
 .task-input-container input {
@@ -50,7 +49,7 @@ h1,h2,h3,h4,h5,h6, p {
   background-color: #007bff;
   color: #fff;
   border: none;
-  padding: .875rem 1rem;
+  padding: .75rem 1rem;
   border-radius: .25rem;
   font-size: 1rem;
   cursor: pointer;
@@ -61,6 +60,7 @@ h1,h2,h3,h4,h5,h6, p {
   align-items: center;
   gap: 0.25rem;
   width: 100%; 
+  font-size: 1.25rem;
   padding: 0.5rem 1rem;
   justify-content: space-between;
 }
@@ -68,19 +68,19 @@ h1,h2,h3,h4,h5,h6, p {
 .task-item button {
   display: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .task-item:hover {
   background-color: #E9EEF6;
 }
 .task-item:hover button{
   display: block;
-
 }
 .task-item-buttons-container {
   display: flex;
-  gap: 0.5rem
+  gap: 0.5rem;
 }
+
 .edit-button {
   line-height: 1;
   background: none;
@@ -176,6 +176,8 @@ button.modal-open {
   perspective: 1000;
   outline:1px solid transparent;
   opacity:0;
+  overflow: auto;
+  max-height: calc(100vh - 5rem);
 }
 
 .modal.open .modal-content {
@@ -252,6 +254,11 @@ input:focus {
   outline: 0;
   border-color: #007bff;
 }
+
+.modal .input-image {
+  display: none;
+}
+
 .modal footer {
   display: flex;
   justify-content: flex-end;
@@ -288,19 +295,7 @@ input:focus {
 
 @media (min-width: 768px) {
   .main-container {
-    max-width: 720px;
-  }
-}
-
-@media (min-width: 992px) {
-  .main-container {
-    max-width: 960px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .main-container {
-    max-width: 1140px;
+    max-width: 700px;
   }
 }
 

@@ -95,15 +95,17 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
 
                 </div>
                 <div className="form-group" >
+                  Image
                   <label htmlFor="image">
-                    Image
+                    <img src={task.image} alt="" width="200" style={{ cursor: 'pointer' }} />
                   </label>
                   <input
                     id="image"
+                    className='input-image'
                     name="image"
+                    accept="image/*"
                     type="file"
                     onChange={onImageChange}
-                    value={task.image}
                   />
                 </div>
 
