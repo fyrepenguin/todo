@@ -8,50 +8,33 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   const defaultTask = { title: "", description: "", deadline: null, tags: [], priority: false, image: "", completed: false, id: null, createdAt: null };
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [sortedTasks, setSortedTasks] = useState(tasks);
+  const [categorisedTasks, setCategorisedTasks] = useState({
+    all: [],
+    today: [],
+    thisWeek: [],
+    overDue: [],
+    completed: [],
+    priority: [],
+    tags: []
+  });
 
-  const options = [{
-    value: 'all',
-    label: 'All'
-  }, {
-    value: 'completed',
-    label: 'Completed'
-  }, {
-    value: 'incomplete',
-    label: 'Incomplete'
-  }]
   const [title, setTitle] = useState('');
 
   const toggle = () => {
     setModal(!modal);
   }
 
-  const addTask = () => {
+  const addTask = (e) => {
+    e.preventDefault();
     onCreate({ ...defaultTask, title, id: uuidv4(), createdAt: new Date().getTime() });
     setTitle('');
   }
   const handleInput = (e) => {
     setTitle(e.target.value)
   }
-
-  useEffect(() => {
-    const selectedOptions = selected.map(({ value }) => value);
-    if (selectedOptions.length > 0) {
-      const filtered = tasks.filter(task => {
-        if (selectedOptions.includes('completed')) {
-          return task.completed
-        } else if (selectedOptions.includes('incomplete')) {
-          return !task.completed
-        } else {
-          return true
-        }
-      })
-      setFilteredTasks(filtered)
-    } else {
-      setFilteredTasks(tasks)
-    }
-  }, [tasks, selected])
-
 
   // push tasks that are completed to the bottom of the list
   const sortTasksByStatus = (tasks) => {
@@ -93,21 +76,78 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   const sortTasks = (tasks) => {
     return sortTasksByStatus(sortTasksByPriority(sortTasksByCreatedAt(tasks)))
   }
+  const options = [{
+    value: 'all',
+    label: 'All'
+  }, {
+    value: 'completed',
+    label: 'Completed'
+  },]
 
   useEffect(() => {
-    setFilteredTasks(sortTasks(tasks))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasks])
+    const selectedOptions = selected.map(({ value }) => value);
+    if (selectedOptions.length > 0) {
+      const filtered = tasks.filter(task => {
+        if (selectedOptions.includes('completed')) {
+          return task.completed
+        }
+        return true
+      })
+      setFilteredTasks(filtered)
+    } else {
+      setFilteredTasks(tasks)
+    }
+  }, [tasks, selected])
 
+  useEffect(() => {
+    setSortedTasks(sortTasks(filteredTasks))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredTasks])
+
+  useEffect(() => {
+    const overDue = tasks.filter(task => {
+      if (task.deadline && task.deadline < new Date().getTime()) {
+        return true
+      }
+      return false
+    })
+
+    const completed = tasks.filter(task => task.completed);
+    const priority = tasks.filter(task => task.priority);
+    const today = tasks.filter(task => {
+      if (task.deadline && task.deadline > new Date().getTime() && task.deadline < new Date().setDate(new Date().getDate() + 1)) {
+        return true
+      }
+      return false
+    })
+    const thisWeek = tasks.filter(task => {
+      if (task.deadline && task.deadline > new Date().getTime() && task.deadline < new Date().setDate(new Date().getDate() + 7)) {
+        return true
+      }
+      return false
+    })
+
+    //filter tasks based on selected tags
+    setCategorisedTasks({
+      all: tasks,
+      today,
+      thisWeek,
+      overDue,
+      completed,
+      priority
+    });
+
+  }, [tasks])
 
 
   return (
     <>
       <div className="todo-list-header">
+        <form onSubmit={addTask} className='task-input-container'>  <input placeholder="Add task todo..." type="text" name="title" onChange={handleInput} value={title} />
+          <button type="submit">Create Task</button>
+        </form>
         <div className='task-input-container'>
-          <input placeholder="Add task todo..." type="text" name="title" onChange={handleInput} value={title} />
-          <button onClick={addTask}>Create Task</button>
-          {/* <button className="btn btn-primary mt-2" onClick={() => setModal(true)} >Create Task</button> */}
+          <button className="btn btn-primary mt-2" onClick={() => setModal(true)} >Create Detailed Task</button>
         </div>
         {/* filters */}
         <div className="filters-container">
@@ -127,7 +167,7 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
       </div>
       <div className="tasks-container">
 
-        {filteredTasks && filteredTasks.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}
+        {sortedTasks.length > 0 ? sortedTasks.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />) : <p style={{ textAlign: 'center' }}>No tasks to show</p>}
       </div>
       <TaskForm key={0} toggle={toggle} modal={modal} onCreate={onCreate}
         defaultTask={defaultTask} type="Create" />

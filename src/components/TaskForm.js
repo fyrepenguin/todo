@@ -70,12 +70,11 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
                   <label htmlFor="description">
                     Description
                   </label>
-                  <input type="textarea" name="description" value={task.description} onChange={handleChange} />
+                  <textarea name="description" value={task.description} onChange={handleChange} />
                 </div>
                 <div className="form-group priority-input-container">
-                  <input type="checkbox" id="priority" name="priority" onChange={handlePriority} checked={task.priority} />
-                  <label htmlFor='priority'>
-                    Priority
+                  <label htmlFor="priority">
+                    <input type="checkbox" id="priority" name="priority" onChange={handlePriority} checked={task.priority} /> Priority
                   </label>
                 </div>
 

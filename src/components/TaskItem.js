@@ -31,19 +31,18 @@ const TaskItem = ({ task, onDelete, onUpdate }) => {
   return (
     <>
       <div className="task-item">
-        {/* <input type="checkbox" checked={status} onChange={handleStatus} name="status" /> */}
         <div onClick={handleStatus} className="task-header">
           <div className="status-icon-container">
             {status ? <FiCheckCircle className='completed-icon' /> : <FiCircle />}
           </div>
-          <h4 style={{ textDecoration: status ? 'line-through' : 'none' }}>{task.title} </h4>
+          <h4 style={{ textDecoration: status ? 'line-through' : 'none', hyphens: 'auto' }}>{task.title.length > 100 ? `${task.title.slice(0, 100)}...` : task.title} </h4>
         </div>
 
 
         <div className='task-item-buttons-container'>
-          <button className='edit-button' onClick={() => setModal(true)} style={{ lineHeight: '1', background: 'none', border: 'none' }}>
+          {!task.completed && <button className='edit-button' onClick={() => setModal(true)} style={{ lineHeight: '1', background: 'none', border: 'none' }}>
             <FaEdit />
-          </button>
+          </button>}
           <button onClick={handleDelete} className="delete-button" >
             <FaTrashAlt />
           </button>
