@@ -5,7 +5,7 @@ import { BsExclamationDiamond } from 'react-icons/bs';
 import { FiCircle, FiCheckCircle } from 'react-icons/fi'
 
 
-const TaskItem = ({ task, onDelete, onUpdate }) => {
+const TaskItem = ({ task, onDelete, onUpdate, overDue = false }) => {
   const [modal, setModal] = useState(false);
   const [status, setStatus] = useState(null);
 
@@ -42,7 +42,7 @@ const TaskItem = ({ task, onDelete, onUpdate }) => {
                 {task.description.length > 100 ? `${task.description.slice(0, 100)}...` : task.description}
               </div>}
 
-              {task.deadline && <div className='task-item-deadline'>
+              {task.deadline && <div className='task-item-deadline' style={{ color: overDue ? 'red' : 'initial' }}>
                 <FaRegClock />{' '}{new Date(task.deadline).toLocaleDateString()}
               </div>}
               {task.tags.length > 0 && <div>

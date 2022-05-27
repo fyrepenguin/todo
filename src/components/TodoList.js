@@ -2,18 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import TaskForm from './TaskForm'
 import TaskItem from './TaskItem';
-import tags from '../tags.json';
-import Select from 'react-select';
+import TaskHeader from './TaskHeader';
 
 const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   const defaultTask = { title: "", description: "", deadline: null, tags: [], priority: false, image: "", completed: false, id: null, createdAt: null };
   const [modal, setModal] = useState(false);
-  const [filters, setFilters] = useState({
-    status: null,
-    tags: []
-  });
-  const [sortOrder, setSortOrder] = useState({ value: 'desc', label: 'Desc' });
-  const [filteredTasks, setFilteredTasks] = useState(tasks);
   const [sortedTasks, setSortedTasks] = useState(tasks);
   const [categorisedTasks, setCategorisedTasks] = useState({
     all: [],
@@ -26,7 +19,6 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   });
 
   const [title, setTitle] = useState('');
-
   const toggle = () => {
     setModal(!modal);
   }
@@ -41,86 +33,6 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   }
 
   // push tasks that are completed to the bottom of the list
-  const sortTasksByStatus = (tasks) => {
-    return tasks.sort((a, b) => {
-      if (a.completed && !b.completed) {
-        return 1
-      } else if (!a.completed && b.completed) {
-        return -1
-      } else {
-        return 0
-      }
-    })
-  }
-
-  const sortTasksByPriority = (tasks) => {
-    return tasks.sort((a, b) => {
-      if (a.priority && !b.priority) {
-        return -1
-      } else if (!a.priority && b.priority) {
-        return 1
-      } else {
-        return 0
-      }
-    })
-  }
-  const sortTasksByCreatedAt = (tasks) => {
-    // sort based on sort order
-    return tasks.sort((a, b) => {
-      const aDate = new Date(a.createdAt).getTime();
-      const bDate = new Date(b.createdAt).getTime();
-      if (sortOrder.value === "asc") {
-
-        return aDate - bDate;
-      } else if (sortOrder.value === "desc") {
-        return bDate - aDate;
-      }
-      return 0
-    })
-  }
-
-  const sortTasks = (tasks) => {
-    return sortTasksByStatus(sortTasksByPriority(sortTasksByCreatedAt(tasks)))
-  }
-
-  const options = [{
-    value: 'all',
-    label: 'All'
-  }, {
-    value: 'completed',
-    label: 'Completed'
-  },]
-
-  useEffect(() => {
-    const filteredTasksWithStatus = tasks.filter(task => {
-      if (filters.status?.value === 'completed') {
-        return task.completed
-      }
-      return true
-    })
-    if (filters.tags.length > 0) {
-      const selectTags = filters.tags.map(({ value }) => value);
-      const filteredWithTags = filteredTasksWithStatus.filter(({ tags }) =>
-        tags.length > 0);
-
-      const filtered = filteredWithTags.filter(({ tags }) => {
-          return tags.some(tag => selectTags.includes(tag.name));
-      });
-      setFilteredTasks(filtered);
-      return;
-    }
-    setFilteredTasks(filteredTasksWithStatus);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, tasks])
-
-  useEffect(() => {
-    const sorted = sortTasks(filteredTasks)
-    setSortedTasks([...sorted])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredTasks, sortOrder])
-
-
 
   useEffect(() => {
     const overDue = sortedTasks.filter(task => {
@@ -170,49 +82,12 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
         <div className='task-input-container'>
           <button className="btn btn-primary mt-2" onClick={() => setModal(true)} >Create Detailed Task</button>
         </div>
-        {/* filters */}
-        <div className="filters-container">
-          <div><h3>Tasks</h3></div>
-          <div className='status-filter'>
-            <h4>Filters: </h4>
-            <div>
-              <label htmlFor="filter"> By Status:</label>
-            <Select
-              options={options}
-                isClearable={true}
-                onChange={(selectedOption) => setFilters(prev => ({ ...prev, status: selectedOption }))}
-                value={filters.status}>
+        <TaskHeader setSortedTasks={setSortedTasks} tasks={tasks} />
 
-            </Select>
-            </div>
-            <div>
-              <label htmlFor="filter"> By Tags:</label>
-              <Select
-                options={tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))}
-                isMulti
-                onChange={(selectedOption) => {
-                  setFilters(prev => ({ ...prev, tags: [...selectedOption] }))
-                }}
-                value={filters.tags}
-              />
-            </div>
-            <div>
-              <label htmlFor="filter">Sort By:</label>
-              <Select
-                options={[{ value: 'asc', label: 'Asc' }, { value: 'desc', label: 'Desc' }]}
-                onChange={(selectedOption) => {
-                  setSortOrder(selectedOption)
-                }}
-                value={sortOrder}
-              />
-            </div>
-          </div>
-
-        </div>
       </div>
       <div className="tasks-container">
         {/* Today Tasks */}
-        {categorisedTasks.today.length > 0 && <div className="tasks-container-header">
+        {categorisedTasks.today.filter(task => !task.completed).length > 0 && <div className="tasks-container-header">
           <h3>Today</h3>
           {categorisedTasks.today.filter(task => !task.completed).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
         {/* This Week Tasks */}
@@ -224,10 +99,17 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
         {/* Overdue Tasks */}
         {categorisedTasks.overDue.length > 0 && <div className="tasks-container-header">
           <h3>Overdue</h3>
-          {categorisedTasks.overDue.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)}</div>}
+          {categorisedTasks.overDue.map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} overDue={true} />)}</div>}
+        {/* Rest of the incomplete tasks */}
         {sortedTasks.length > 0 &&
           <div className='tasks-container-header'>
-            {sortedTasks.filter(task => !task.completed).filter(task => !categorisedTasks.today.includes(task)).filter(task => !categorisedTasks.thisWeek.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)} </div>}
+            {sortedTasks.filter(task => !task.completed).filter(task => !categorisedTasks.today.includes(task)).filter(task => !categorisedTasks.thisWeek.includes(task)).filter(task => !categorisedTasks.overDue.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)} </div>}
+        {/* Empty Tasks */}
+        {sortedTasks.length === 0 && <div className="tasks-container-header">
+          <p style={{ textAlign: 'center', marginTop: '1rem' }}>No Tasks found!</p>
+        </div>}
+
+
         {/* Completed Tasks */}
         {categorisedTasks.completed.length > 0 && <div className="tasks-container-header">
           <h3>Completed</h3>
