@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import TodoList from "./components/TodoList";
 import './App.css'
+import Login from "./components/Login";
 
 function App() {
+  const [loginState, setLoginState] = useState(false);
   const [tasks, setTasks] = useState([]);
   const defaultTask = {
     title: "",
@@ -50,7 +52,9 @@ function App() {
       <header className="app-title">
         <h2>Todo </h2>
       </header>
-      <TodoList tasks={tasks} onCreate={onCreate} onUpdate={onUpdate} onDelete={onDelete} defaultTask={defaultTask} />
+      {!loginState && <Login setLoginState={setLoginState} />}
+
+      {loginState && <TodoList tasks={tasks} onCreate={onCreate} onUpdate={onUpdate} onDelete={onDelete} defaultTask={defaultTask} />}
     </div>
   );
 }
