@@ -69,8 +69,8 @@ const TaskItem = ({ task, onDelete, onUpdate }) => {
         </div>
 
       </div>
-      <TaskForm key={task.id} modal={modal}
-        defaultTask={task} toggle={toggle} onUpdate={onUpdate} task={task} type="Edit" />
+      {modal && <TaskForm key={task.id} modal={modal}
+        defaultTask={task} toggle={toggle} onUpdate={onUpdate} task={task} type="Edit" />}
     </>
   );
 };
