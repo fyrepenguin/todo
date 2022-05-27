@@ -8,9 +8,11 @@ import Select from 'react-select';
 const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   const defaultTask = { title: "", description: "", deadline: null, tags: [], priority: false, image: "", completed: false, id: null, createdAt: null };
   const [modal, setModal] = useState(false);
-  const [selected, setSelected] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [filters, setFilters] = useState({
+    status: null,
+    tags: []
+  });
+  const [sortOrder, setSortOrder] = useState({ value: 'desc', label: 'Desc' });
   const [filteredTasks, setFilteredTasks] = useState(tasks);
   const [sortedTasks, setSortedTasks] = useState(tasks);
   const [categorisedTasks, setCategorisedTasks] = useState({
@@ -51,17 +53,6 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
     })
   }
 
-  const sortTasksByCreatedAt = (tasks) => {
-    // sort based on sort order
-    return tasks.sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.createdAt - b.createdAt
-      } else {
-        return b.createdAt - a.createdAt
-      }
-    })
-  }
-
   const sortTasksByPriority = (tasks) => {
     return tasks.sort((a, b) => {
       if (a.priority && !b.priority) {
@@ -73,10 +64,25 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
       }
     })
   }
+  const sortTasksByCreatedAt = (tasks) => {
+    // sort based on sort order
+    return tasks.sort((a, b) => {
+      const aDate = new Date(a.createdAt).getTime();
+      const bDate = new Date(b.createdAt).getTime();
+      if (sortOrder.value === "asc") {
+
+        return aDate - bDate;
+      } else if (sortOrder.value === "desc") {
+        return bDate - aDate;
+      }
+      return 0
+    })
+  }
 
   const sortTasks = (tasks) => {
     return sortTasksByStatus(sortTasksByPriority(sortTasksByCreatedAt(tasks)))
   }
+
   const options = [{
     value: 'all',
     label: 'All'
@@ -86,41 +92,33 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
   },]
 
   useEffect(() => {
+    const filteredTasksWithStatus = tasks.filter(task => {
+      if (filters.status?.value === 'completed') {
+        return task.completed
+      }
+      return true
+    })
+    if (filters.tags.length > 0) {
+      const selectTags = filters.tags.map(({ value }) => value);
+      const filteredWithTags = filteredTasksWithStatus.filter(({ tags }) =>
+        tags.length > 0);
 
-    if (selected) {
-      const filtered = tasks.filter(task => {
-        if (selected.value === 'completed') {
-          return task.completed
-        }
-        return true
-      })
-      setFilteredTasks(filtered)
-    } else {
-      setFilteredTasks(tasks)
-    }
-  }, [tasks, selected])
-
-  useEffect(() => {
-
-    const selectTags = selectedTags.map(({ value }) => value);
-    let filtered = [...tasks]
-    if (selectTags.length > 0) {
-      filtered = tasks.filter(({ tags }) =>
-        tags.length > 0).filter(({ tags }) => {
+      const filtered = filteredWithTags.filter(({ tags }) => {
           return tags.some(tag => selectTags.includes(tag.name));
-        });
-      console.log({ filtered, selectTags })
-
-      setFilteredTasks(filtered)
+      });
+      setFilteredTasks(filtered);
+      return;
     }
+    setFilteredTasks(filteredTasksWithStatus);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortedTasks, selectedTags])
+  }, [filters, tasks])
 
   useEffect(() => {
-
-    setSortedTasks(sortTasks(filteredTasks))
+    const sorted = sortTasks(filteredTasks)
+    setSortedTasks([...sorted])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredTasks])
+  }, [filteredTasks, sortOrder])
 
 
 
@@ -163,10 +161,6 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedTasks])
 
-  useEffect(() => {
-    console.log({ categorisedTasks, filteredTasks, sortedTasks })
-  }, [categorisedTasks])
-
   return (
     <>
       <div className="todo-list-header">
@@ -186,8 +180,8 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
             <Select
               options={options}
                 isClearable={true}
-                onInputChange={(selectedOption) => setSelected(selectedOption)}
-              value={selected}>
+                onChange={(selectedOption) => setFilters(prev => ({ ...prev, status: selectedOption }))}
+                value={filters.status}>
 
             </Select>
             </div>
@@ -196,10 +190,10 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
               <Select
                 options={tags.map(tag => ({ value: tag.name, label: tag.name, ...tag }))}
                 isMulti
-                onInputChange={(selectedOption) => {
-                  setSelectedTags([...selectedOption])
+                onChange={(selectedOption) => {
+                  setFilters(prev => ({ ...prev, tags: [...selectedOption] }))
                 }}
-                value={selectedTags}
+                value={filters.tags}
               />
             </div>
             <div>
