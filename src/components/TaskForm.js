@@ -98,7 +98,6 @@ const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type =
                 </div>
                 <div className="form-group" >
                   Image
-                  {console.log({ title: task.title, task })}
                   <label htmlFor={`image-${task.id}`} style={{ cursor: 'pointer' }}>
                     {task.image.length > 0 ? <img src={task.image} alt="" width="200" /> : <FcAddImage fontSize={50} />}
                   </label>

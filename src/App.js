@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from "./AuthContext";
 import TodoList from "./components/TodoList";
 import './App.css'
 import Login from "./components/Login";
+import Layout from './components/Layout';
+import RequireAuth from './components/RequireAuth';
+import NotFound from './components/NotFound';
 
 function App() {
-  const [loginState, setLoginState] = useState(false);
   const [tasks, setTasks] = useState([]);
   const defaultTask = {
     title: "",
@@ -48,14 +52,25 @@ function App() {
 
 
   return (
-    <div className="main-container">
-      <header className="app-title">
-        <h2>Todo </h2>
-      </header>
-      {!loginState && <Login setLoginState={setLoginState} />}
+    <AuthProvider>
+      <div className="main-container">
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <TodoList tasks={tasks} onCreate={onCreate} onUpdate={onUpdate} onDelete={onDelete} defaultTask={defaultTask} />
+                </RequireAuth>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Route>
 
-      {loginState && <TodoList tasks={tasks} onCreate={onCreate} onUpdate={onUpdate} onDelete={onDelete} defaultTask={defaultTask} />}
-    </div>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 

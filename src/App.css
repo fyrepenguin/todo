@@ -16,6 +16,26 @@ h1,h2,h3,h4,h5,h6, p {
   background-color: #f8f9fa !important;
 }
 
+.auth-status {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+.auth-status button {
+  cursor:pointer;
+  margin-left: 1rem;
+}
+.not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #343a40;
+
+}
+
 .app-title {
   color: #007bff;
   padding: 1.5rem;

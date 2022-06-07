@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom';
 import loginDetails from '../loginDetails.json';
+import { useAuth } from '../AuthContext';
 
-const Login = ({ setLoginState }) => {
+const Login = () => {
+  let navigate = useNavigate();
+  let location = useLocation();
+  let auth = useAuth();
+
+  let from = location.state?.from?.pathname || "/";
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -12,10 +20,17 @@ const Login = ({ setLoginState }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value })
   }
+
   const handleSubmit = e => {
     e.preventDefault();
     if (loginDetails.email === email && loginDetails.password === password) {
-      setLoginState(true)
+      let formData = new FormData(e.currentTarget);
+      let email = formData.get("email");
+
+      auth.login(email, () => {
+        navigate(from, { replace: true });
+      });
+      return;
     }
   }
 
