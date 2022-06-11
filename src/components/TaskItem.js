@@ -37,7 +37,7 @@ const TaskItem = ({ task, onDelete, onUpdate, overDue = false }) => {
             <div className="status-icon-container" onClick={handleStatus} >
               {status ? <FiCheckCircle className='completed-icon' /> : <FiCircle />}
             </div><div onClick={() => setModal(!task.completed)}>
-              <h4 className='task-item-title' style={{ textDecoration: status ? 'line-through' : 'none', hyphens: 'auto' }}>{task.title.length > 100 ? `${task.title.slice(0, 100)}...` : task.title}</h4>
+              <h4 className='task-item-title' style={{ textDecoration: status ? 'line-through' : 'none' }}>{task.title.length > 100 ? `${task.title.slice(0, 100)}...` : task.title}</h4>
               {task.description && <div className='task-item-description'>
                 {task.description.length > 100 ? `${task.description.slice(0, 100)}...` : task.description}
               </div>}
@@ -59,7 +59,7 @@ const TaskItem = ({ task, onDelete, onUpdate, overDue = false }) => {
 
 
           <div className='task-item-buttons-container'>
-            {!task.completed && <button className='edit-button' onClick={() => setModal(true)} style={{ lineHeight: '1', background: 'none', border: 'none' }}>
+            {!task.completed && <button className='edit-button' onClick={() => setModal(true)}>
               <FaEdit />
             </button>}
             <button onClick={handleDelete} className="delete-button" >

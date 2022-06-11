@@ -7,7 +7,7 @@ const AuthStatus = () => {
   let navigate = useNavigate();
 
   if (!auth.user) {
-    return <p className='auth-status'>You are not logged in.  <button
+    return <p className='auth-status-message'>You are not logged in.  <button
       onClick={() => {
         navigate("/login");
       }}
@@ -17,7 +17,7 @@ const AuthStatus = () => {
   }
 
   return (
-    <p className='auth-status'>
+    <p className='auth-status-message'>
       Welcome {auth.user}!{" "}
       <button
         onClick={() => {

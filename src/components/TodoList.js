@@ -106,7 +106,7 @@ const TodoList = ({ tasks, onCreate, onUpdate, onDelete }) => {
             {sortedTasks.filter(task => !task.completed).filter(task => !categorisedTasks.today.includes(task)).filter(task => !categorisedTasks.thisWeek.includes(task)).filter(task => !categorisedTasks.overDue.includes(task)).map((task, index) => <TaskItem task={task} index={index} onDelete={onDelete} onUpdate={onUpdate} key={index} />)} </div>}
         {/* Empty Tasks */}
         {sortedTasks.length === 0 && <div className="tasks-container-header">
-          <p style={{ textAlign: 'center', marginTop: '1rem' }}>No Tasks found!</p>
+          <p className="no-tasks-found-message">No Tasks found!</p>
         </div>}
 
 

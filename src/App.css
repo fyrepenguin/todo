@@ -1,6 +1,10 @@
 *,*::after, *::before {
   box-sizing: border-box;
 }
+
+img {
+  max-width: 100%;
+}
 h1,h2,h3,h4,h5,h6, p {
   padding: 0;
   margin: 0;
@@ -16,16 +20,16 @@ h1,h2,h3,h4,h5,h6, p {
   background-color: #f8f9fa !important;
 }
 
-.auth-status {
+.auth-status-message {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
 }
-.auth-status button {
+.auth-status-message button {
   cursor:pointer;
   margin-left: 1rem;
 }
-.not-found {
+.not-found-message {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,7 +37,6 @@ h1,h2,h3,h4,h5,h6, p {
   font-size: 2rem;
   font-weight: bold;
   color: #343a40;
-
 }
 
 .app-title {
@@ -111,6 +114,10 @@ h1,h2,h3,h4,h5,h6, p {
   cursor: pointer;
   outline: none;
 }
+.image-input-label {
+  cursor: pointer;
+}
+
 .task-item {
   display: flex;
   align-items: center;
@@ -127,6 +134,11 @@ h1,h2,h3,h4,h5,h6, p {
   margin-top: 0.5rem;
   color: #007bff
 }
+.no-tasks-found-message {
+  text-align: center;
+  margin-top: 1rem;
+}
+
 .task-header h4 {
   padding-right: 1.25rem;
 }
@@ -357,6 +369,7 @@ input:focus {
 
 .task-item-title {
   font-size: 1.5rem;
+  hyphens: auto;
 }
 .task-item-description {
   font-size: 1rem;
