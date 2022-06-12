@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
-import loginDetails from '../loginDetails.json';
+import loginDetails from '../data/loginDetails.json';
 import { useAuth } from '../AuthContext';
 
 const Login = () => {

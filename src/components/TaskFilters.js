@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import tags from '../tags.json';
+import tags from '../data/tags.json';
 import Select from 'react-select';
 
 const TaskFilters = ({ tasks, setSortedTasks }) => {

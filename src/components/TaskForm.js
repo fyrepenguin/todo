@@ -4,7 +4,7 @@ import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid';
 import { FcAddImage } from 'react-icons/fc';
 import "react-datepicker/dist/react-datepicker.css";
-import tags from '../tags.json';
+import tags from '../data/tags.json';
 
 const TaskForm = ({ modal, toggle, onCreate, task: taskData, defaultTask, type = "Create", onUpdate }) => {
   const [task, setTask] = useState({ ...defaultTask, id: uuidv4() });

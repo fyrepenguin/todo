@@ -95,7 +95,7 @@ h1,h2,h3,h4,h5,h6, p {
   max-width: 700px;
   padding: 0px 1rem;
 }
-.task-input-container input {
+.task-input-container input, .task-input-container textarea {
   width: 100%;
   padding: .5rem;
   border: 1px solid #ced4da;
@@ -130,7 +130,7 @@ h1,h2,h3,h4,h5,h6, p {
 .tasks-container-header {
   border-top: 1px solid #ced4da;
 }
-.tasks-container-header h3 {
+.tasks-container-header > h3 {
   margin-top: 0.5rem;
   color: #007bff
 }
@@ -276,7 +276,7 @@ button.modal-open {
   cursor: pointer;
   text-decoration:none;
   padding:22px 22px;
-  color:#424242;
+  color:#fff;
   font-weight:800;
   transition:all .5s ease-in-out;
   z-index:+1;
@@ -319,7 +319,7 @@ button.modal-open {
   flex-direction: row;
   align-items: center;
 }
-.modal input {
+.modal input, .modal textarea {
   width: 100%;
   padding: 1em;
   line-height: 1.4;
@@ -332,7 +332,7 @@ button.modal-open {
   transition: 0.35s ease-in-out;
   transition: all 0.35s ease-in-out;
 }
-input:focus {
+input:focus, textarea:focus {
   outline: 0;
   border-color: #007bff;
 }
