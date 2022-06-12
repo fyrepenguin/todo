@@ -53,7 +53,6 @@ function App() {
 
   return (
     <AuthProvider>
-      <div className="main-container">
         <Routes>
           <Route element={<Layout />}>
             <Route path="/login" element={<Login />} />
@@ -68,8 +67,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
 
-        </Routes>
-      </div>
+      </Routes>
     </AuthProvider>
   );
 }

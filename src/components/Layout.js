@@ -4,7 +4,7 @@ import AuthStatus from './AuthStatus';
 
 const Layout = () => {
   return (
-    <div>
+    <div className='main-container'>
       <AuthStatus />
       <header className="app-title">
         <h2>Todo </h2>
